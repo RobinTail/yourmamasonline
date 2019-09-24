@@ -1,0 +1,21 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "quotemark": [true, "single"],
+    "trailing-comma": [true, {
+      "multiline": "never",
+      "singleline": "never"
+    }],
+    "indent": [true, "spaces", 2],
+    "prefer-const": false,
+    "interface-name": false,
+    "object-literal-sort-keys": false,
+    "only-arrow-functions": false,
+    "member-ordering": false,
+    "array-type": [true, "array"],
+    "max-classes-per-file": false,
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "variable-name": [true, "allow-leading-underscore", "allow-pascal-case"],
+    "no-shadowed-variable": false
+  }
+}
