@@ -9,7 +9,7 @@ interface Config {
 const publicConfig: Config = {
   token: '',
   numberOfReviews: 4,
-  cacheExpirationSeconds: 30 * 24 * 60 * 60 // 30 days
+  cacheExpirationSeconds: 3 * 24 * 60 * 60 // 3 days
 };
 
 const privateConfigPath = path.join(__dirname, 'private-config');
