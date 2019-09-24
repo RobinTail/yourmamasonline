@@ -3,9 +3,10 @@ import MemoryCache = require('fast-memory-cache');
 import fetch from 'node-fetch';
 import Telegraf, {ContextMessageUpdate} from 'telegraf';
 import {config} from './config';
+import createLogger from './logger';
 
 const apiUrl = 'https://www.neberitrubku.ru/nomer-telefona';
-const logger = console.log;
+const logger = createLogger();
 const cache = new MemoryCache();
 
 interface NumberDescription {
@@ -69,9 +70,9 @@ async function listen(bot: Telegraf<ContextMessageUpdate>) {
 async function start() {
   const bot = new Telegraf(config.token);
   const botInfo = await bot.telegram.getMe();
-  logger(botInfo);
+  logger.info('Bot information', botInfo);
   bot.startPolling();
   return await listen(bot);
 }
 
-start().catch(logger);
+start().catch(logger.error);
