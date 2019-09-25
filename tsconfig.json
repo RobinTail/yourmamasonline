@@ -14,7 +14,8 @@
       "definitions"
     ],
     "types": [
-      "node"
+      "node",
+      "mocha"
     ]
   }
 }
