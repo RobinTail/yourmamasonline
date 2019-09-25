@@ -67,20 +67,18 @@ async function getNumberDescription(phoneNumber: PhoneNumber): Promise<NumberDes
   return numberInformation;
 }
 
-async function describeNumber(ctx: ContextMessageUpdate, phoneNumber: PhoneNumber | null) {
-  if (phoneNumber) {
-    const numberDescription = await getNumberDescription(phoneNumber);
-    await ctx.reply(
-      `${numberDescription.main.join('\n')}\n\n` +
-      (numberDescription.topRates.length ? `Оценка:\n${numberDescription.topRates.join('\n')}\n\n` : '') +
-      (
-        numberDescription.reviews.length ? (
-          `Отзывы:\n` +
-          numberDescription.reviews.map((review) => `${review.author}: ${review.message}`).join('\n')
-        ) : ''
-      )
-    );
-  }
+async function describeNumber(ctx: ContextMessageUpdate, phoneNumber: PhoneNumber) {
+  const numberDescription = await getNumberDescription(phoneNumber);
+  await ctx.reply(
+    `${numberDescription.main.join('\n')}\n\n` +
+    (numberDescription.topRates.length ? `Оценка:\n${numberDescription.topRates.join('\n')}\n\n` : '') +
+    (
+      numberDescription.reviews.length ? (
+        `Отзывы:\n` +
+        numberDescription.reviews.map((review) => `${review.author}: ${review.message}`).join('\n')
+      ) : ''
+    )
+  );
 }
 
 async function listen(bot: Telegraf<ContextMessageUpdate>) {
