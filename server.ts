@@ -62,8 +62,15 @@ async function describeNumber(ctx: ContextMessageUpdate, phoneNumber: string | n
 
 async function listen(bot: Telegraf<ContextMessageUpdate>) {
   bot.start((ctx) => ctx.reply('Отправьте мне номер телефона без пробелов и дефисов.'));
-  bot.hears(/(\+?7|8)(\d{10})/,
-    async (ctx) => await describeNumber(ctx, ctx.match ? `8${ctx.match[2]}` : null));
+  bot.on('text', async (ctx) => {
+    const text = ctx.message && ctx.message.text ? ctx.message.text : '';
+    const regex = text.match(/(\+?7|8)(\d{10})/);
+    if (regex) {
+      return await describeNumber(ctx, `8${regex[2]}`);
+    }
+    await ctx.reply('Не нахожу номера телефона в вашем сообщении.');
+  });
+  bot.on('message', async (ctx) => await ctx.reply('Напишите текстом, пожалуйста'));
   return bot;
 }
 
