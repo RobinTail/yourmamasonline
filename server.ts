@@ -18,7 +18,30 @@ interface NumberDescription {
   }[];
 }
 
-async function getNumberDescription(phoneNumber: string): Promise<NumberDescription> {
+type PhoneNumber = string[11];
+
+function isPhoneNumber(value: any): value is PhoneNumber {
+  return typeof value === 'string' && value.length === 11 && value[0] === '8';
+}
+
+function ensurePhoneNumber(value: any): PhoneNumber | null {
+  return isPhoneNumber(value) ? value : null;
+}
+
+function parsePhoneNumber(text: string): PhoneNumber | null {
+  let regex;
+  regex = text.match(/(\+?7|8)(\d{10})/);
+  if (regex) {
+    return ensurePhoneNumber(`8${regex[2]}`);
+  }
+  regex = text.match(/(\+?7|8)([\d\s\-\(\)\.]+)/);
+  if (regex) {
+    return ensurePhoneNumber(`8${regex[2].replace(/[^\d]/g, '')}`);
+  }
+  return null;
+}
+
+async function getNumberDescription(phoneNumber: PhoneNumber): Promise<NumberDescription> {
   const cachedData: NumberDescription | undefined = cache.get(phoneNumber);
   if (cachedData) {
     return cachedData;
@@ -44,7 +67,7 @@ async function getNumberDescription(phoneNumber: string): Promise<NumberDescript
   return numberInformation;
 }
 
-async function describeNumber(ctx: ContextMessageUpdate, phoneNumber: string | null) {
+async function describeNumber(ctx: ContextMessageUpdate, phoneNumber: PhoneNumber | null) {
   if (phoneNumber) {
     const numberDescription = await getNumberDescription(phoneNumber);
     await ctx.reply(
@@ -64,11 +87,11 @@ async function listen(bot: Telegraf<ContextMessageUpdate>) {
   bot.start((ctx) => ctx.reply('Отправьте мне номер телефона без пробелов и дефисов.'));
   bot.on('text', async (ctx) => {
     const text = ctx.message && ctx.message.text ? ctx.message.text : '';
-    const regex = text.match(/(\+?7|8)(\d{10})/);
-    if (regex) {
-      return await describeNumber(ctx, `8${regex[2]}`);
+    const phoneNumber = parsePhoneNumber(text);
+    if (!phoneNumber) {
+      return await ctx.reply('Не нахожу номера телефона в вашем сообщении.');
     }
-    await ctx.reply('Не нахожу номера телефона в вашем сообщении.');
+    await describeNumber(ctx, phoneNumber);
   });
   bot.on('message', async (ctx) => await ctx.reply('Напишите текстом, пожалуйста'));
   return bot;
