@@ -4,6 +4,7 @@
   "description": "Telegram bot provides information about phone numbers.",
   "main": "server.ts",
   "scripts": {
+    "production": "yarn build && NODE_ENV=production pm2 start dist/server.js -n yourmama",
     "dev": "ts-node-dev --ignore-watch node_modules -r tsconfig-paths/register server.ts",
     "build": "rm -Rf dist && tsc --project tsconfig.json",
     "lint": "tslint --project . --format stylish",
